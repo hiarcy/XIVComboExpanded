@@ -151,30 +151,30 @@ public enum CustomComboPreset
     // ====================================================================================
     #region BLACK MAGE
 
-    [CustomComboInfo("Enochian Feature", "Replace Fire 4 and Blizzard 4 with whichever action you can currently use.", BLM.JobID)]
+    [CustomComboInfo("Enochian Feature", "Replace Fire 4 with whichever action you can currently use.", BLM.JobID)]
     BlackEnochianFeature = 2501,
 
     [ParentCombo(BlackEnochianFeature)]
-    [CustomComboInfo("Flare Star feature", "Replace Fire 4 and Blizzard 4 with Flare Star when you have 6 astral soul.", BLM.JobID)]
+    [CustomComboInfo("Flare Star feature", "Replace Fire 4 with Flare Star when you have 6 astral soul.", BLM.JobID)]
     BlackFlareStarFeature = 2523,
 
     [SecretCustomCombo]
     [ParentCombo(BlackEnochianFeature)]
-    [CustomComboInfo("Enochian Despair Feature", "Replace Fire 4 and Blizzard 4 with Despair when in Astral Fire with less than 2400 mana.", BLM.JobID)]
+    [CustomComboInfo("Enochian Despair Feature", "Replace Fire 4 with Despair when in Astral Fire with less than 2400 mana.", BLM.JobID)]
     BlackEnochianDespairFeature = 2510,
 
     [SecretCustomCombo]
     [ParentCombo(BlackEnochianDespairFeature)]
-    [CustomComboInfo("Enochian Despair into Flare Star Feature", "Replace Fire 4 and Blizzard 4 with Flare Star when you have 6 astral soul and 0 mana.", BLM.JobID)]
+    [CustomComboInfo("Enochian Despair into Flare Star Feature", "Replace Fire 4 with Flare Star when you have 6 astral soul and 0 mana.", BLM.JobID)]
     BlackEnochianDespairFlareStarFeature = 2524,
 
     [SecretCustomCombo]
     [ParentCombo(BlackEnochianFeature)]
-    [CustomComboInfo("Enochian Timer Feature", "Replace Fire 4 and Blizzard 4 with Fire 3 Proc, Paradox, Instant-Despair, or Blizzard 3 when Enochian is about to run out.", BLM.JobID)]
+    [CustomComboInfo("Enochian Timer Feature", "Replace Fire 4 with Fire 3 Proc, Paradox, Instant-Despair, or Blizzard 3 when Enochian is about to run out.", BLM.JobID)]
     BlackEnochianTimerFeature = 2525,
 
     [ParentCombo(BlackEnochianFeature)]
-    [CustomComboInfo("Enochian No Sync Feature", "Fire 4 and Blizzard 4 will not sync to Fire 1 and Blizzard 1.", BLM.JobID)]
+    [CustomComboInfo("Enochian No Sync Feature", "Fire 4 will not sync to Fire 1.", BLM.JobID)]
     BlackEnochianNoSyncFeature = 2518,
 
     [CustomComboInfo("Transpose into Umbral Soul", "Replace Transpose with Umbral Soul when Umbral Soul is usable.", BLM.JobID)]

@@ -83,86 +83,63 @@ internal static class BLM
     }
 }
 
-internal class BlackFireBlizzard4 : CustomCombo
+internal class BlackFire4 : CustomCombo
 {
     protected internal override CustomComboPreset Preset { get; } = CustomComboPreset.BlmAny;
 
     protected override uint Invoke(uint actionID, uint lastComboMove, float comboTime, byte level)
     {
-        if (actionID == BLM.Blizzard4)
+        if (actionID != BLM.Fire4) return actionID;
+
+        var gauge = GetJobGauge<BLMGauge>();
+        var fire = GetCooldown(BLM.Fire);
+        var fire4 = GetCooldown(BLM.Fire4);
+
+        if (IsEnabled(CustomComboPreset.BlackEnochianFeature))
         {
-            var gauge = GetJobGauge<BLMGauge>();
+            if (this.IsFlareStarAvailable(level, gauge))
+                return BLM.FlareStar;
 
-            if (IsEnabled(CustomComboPreset.BlackSpellsUmbralSoulFeature))
+            if (gauge.InAstralFire)
             {
-                if (level >= BLM.Levels.UmbralSoul && gauge.InUmbralIce && !HasTarget())
-                    return BLM.UmbralSoul;
-            }
-        }
+                if (this.ShouldCastFire3(gauge, fire4))
+                    return BLM.Fire3;
 
-        if (actionID == BLM.Fire4 || actionID == BLM.Blizzard4)
-        {
-            var gauge = GetJobGauge<BLMGauge>();
-            var fire4 = GetCooldown(BLM.Fire4);
+                if (this.ShouldCastDespair(level))
+                    return BLM.Despair;
 
-            if (IsEnabled(CustomComboPreset.BlackEnochianFeature))
-            {
-                if (IsEnabled(CustomComboPreset.BlackFlareStarFeature))
-                {
-                    if (level >= BLM.Levels.FlareStar)
-                    {
-                        if (gauge.AstralSoulStacks >= 6)
-                            return BLM.FlareStar;
-                    }
-                }
-
-                if (gauge.InAstralFire)
-                {
-                    if (IsEnabled(CustomComboPreset.BlackEnochianTimerFeature)) // 10% safety net to account for server tick shenanigans and despair cast time
-                        {
-                            if (((HasEffect(BLM.Buffs.Swiftcast) || HasEffect(BLM.Buffs.Triplecast))
-                            && gauge.ElementTimeRemaining / 1000.0 < fire4.BaseCooldown * 1.10) || gauge.ElementTimeRemaining / 1000.0 < fire4.CastTime * 1.10)
-                            {
-                                if (HasEffect(BLM.Buffs.Firestarter))
-                                    return BLM.Fire3;
-                                if (level > BLM.Levels.Paradox && gauge.IsParadoxActive)
-                                    return BLM.Paradox;
-                                if (level > BLM.Levels.Despair && LocalPlayer?.CurrentMp > 0 && (HasEffect(BLM.Buffs.Swiftcast) || HasEffect(BLM.Buffs.Triplecast)))
-                                    return BLM.Despair;
-                                if (level >= BLM.Levels.Blizzard3)
-                                    return BLM.Blizzard3;
-                            }
-                        }
-
-                    if (IsEnabled(CustomComboPreset.BlackEnochianDespairFeature))
-                    {
-                        if (IsEnabled(CustomComboPreset.BlackEnochianDespairFlareStarFeature))
-                        {
-                            if (level >= BLM.Levels.FlareStar && gauge.AstralSoulStacks >= 6 && LocalPlayer?.CurrentMp <= 0)
-                                return BLM.FlareStar;
-                        }
-
-                        if (level >= BLM.Levels.Despair && LocalPlayer?.CurrentMp < 2400)
-                            return BLM.Despair;
-                    }
-
-                    if (IsEnabled(CustomComboPreset.BlackEnochianNoSyncFeature) || level >= BLM.Levels.Fire4)
-                        return BLM.Fire4;
-
+                if (this.ShouldCastFire(gauge, fire))
                     return BLM.Fire;
-                }
-
-                if (gauge.InUmbralIce)
-                {
-                    if (IsEnabled(CustomComboPreset.BlackEnochianNoSyncFeature) || level >= BLM.Levels.Blizzard4)
-                        return BLM.Blizzard4;
-
-                    return BLM.Blizzard;
-                }
             }
         }
 
         return actionID;
+    }
+
+    private bool IsFlareStarAvailable(byte level, BLMGauge gauge)
+    {
+        return IsEnabled(CustomComboPreset.BlackFlareStarFeature)
+            && level >= BLM.Levels.FlareStar
+            && gauge.AstralSoulStacks >= 6;
+    }
+
+    private bool ShouldCastFire3(BLMGauge gauge, CooldownData fire4)
+    {
+        return (IsEnabled(CustomComboPreset.BlackEnochianTimerFeature)
+            && (HasEffect(BLM.Buffs.Swiftcast) || HasEffect(BLM.Buffs.Triplecast))
+            && gauge.ElementTimeRemaining / 1000.0 < fire4.BaseCooldown * 1.20)
+            || (gauge.ElementTimeRemaining / 1000.0 < fire4.CastTime * 1.20 && HasEffect(BLM.Buffs.Firestarter));
+    }
+
+    private bool ShouldCastDespair(byte level)
+    {
+        return (level > BLM.Levels.Despair && LocalPlayer?.CurrentMp > 0 && (HasEffect(BLM.Buffs.Swiftcast) || HasEffect(BLM.Buffs.Triplecast)))
+            || (level >= BLM.Levels.Despair && LocalPlayer?.CurrentMp < 2400);
+    }
+
+    private bool ShouldCastFire(BLMGauge gauge, CooldownData fire)
+    {
+        return gauge.ElementTimeRemaining / 1000.0 < fire.BaseCooldown * 1.30;
     }
 }
 
